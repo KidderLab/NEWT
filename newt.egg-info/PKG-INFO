@@ -1,0 +1,16 @@
+Metadata-Version: 2.4
+Name: newt
+Version: 0.1.1
+Summary: NEWT — Network-Embedded Weighting Toolkit CLI
+Author-email: Your Name <you@example.com>
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: click>=8
+Dynamic: license-file
+
+# NEWT — Network-Embedded Weighting Toolkit

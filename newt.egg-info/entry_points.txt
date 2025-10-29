@@ -1,0 +1,2 @@
+[console_scripts]
+newt = newt.cli:main

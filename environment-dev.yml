@@ -1,0 +1,10 @@
+name: newt_dev
+channels: [conda-forge, defaults]
+dependencies:
+  - python=3.10
+  - pip
+  - pytest
+  - flake8=7.1.1
+  - pre-commit
+  - pip:
+      - build

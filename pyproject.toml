@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "newt"
+version = "0.1.1"
+description = "NEWT — Network-Embedded Weighting Toolkit CLI"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Your Name", email = "you@example.com" }]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+  "click>=8"
+]
+
+[project.scripts]
+newt = "newt.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["newt*"]

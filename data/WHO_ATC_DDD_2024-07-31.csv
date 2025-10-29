@@ -1,9 +1,0 @@
-atc_code,atc_name
-A,Alimentary tract
-B,Blood
-A01,Stomatological
-A01A,Antiinfectives
-A01AA1,"Antiinfectives, subsets"
-B02,Antithrombotic
-B02B,Vitamin B
-B02BA1,"Vitamin B, subset"

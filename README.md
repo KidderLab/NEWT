@@ -119,7 +119,8 @@ Adjust `../` prefixes if running from within a subdirectory.
 Trains a multimodal attention-based fusion model that integrates GO, MSigDB, CellNet, and PPI embeddings to classify tissue or lineage signatures.
 
 ```bash
-python newt/scripts/classifier_improved_fusion_v13_collectri_dorothea_no_strict.py   --outdir results   --fusion_method attention   --fusion_epochs 30   --fusion_patience 5   --batch_size 16   --default_file ../data/gene_vec_go_256.csv   --archs4_file ../data/gene_vec_archs4_256.csv   --ppi_file ../data/learned_gene_embeddings_go_graph.csv   --msigdb_file ../data/msigdb_bundle_embeddings_entrez.csv   --cellnet_file ../data/cellnet_filtered_entrez_embeddings.csv   --dorothea_file ../data/dorothea_embeddings_entrez_embeddings.csv   --collectri_file ../data/collectri_embeddings_entrez_embeddings.csv   --cellnet_dim 256   --tissue_file data/tissue_specific.txt
+cd newt
+python scripts/classifier_improved_fusion_v13_collectri_dorothea_no_strict.py   --outdir results   --fusion_method attention   --fusion_epochs 30   --fusion_patience 5   --batch_size 16   --default_file ../data/gene_vec_go_256.csv   --archs4_file ../data/gene_vec_archs4_256.csv   --ppi_file ../data/learned_gene_embeddings_go_graph.csv   --msigdb_file ../data/msigdb_bundle_embeddings_entrez.csv   --cellnet_file ../data/cellnet_filtered_entrez_embeddings.csv   --dorothea_file ../data/dorothea_embeddings_entrez_embeddings.csv   --collectri_file ../data/collectri_embeddings_entrez_embeddings.csv   --cellnet_dim 256   --tissue_file ../data/tissue_specific.txt
 ```
 
 **Outputs:**  

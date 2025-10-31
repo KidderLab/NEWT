@@ -41,6 +41,7 @@ mamba activate newt_env
 pip install -e .
 
 mamba install -c conda-forge scanpy seaborn matplotlib scikit-learn pandas numpy
+mamba install -c conda-forge leidenalg
 ```
 
 ### 3️⃣ For headless plotting

@@ -116,7 +116,7 @@ TP53,0.12,0.07,0.03,...
 
 ---
 
-# training embeddings
+# Training Embeddings
 
 This section describes how to generate NEWT’s embedding CSVs for CellNet, DoRothEA, CollecTRI, and MSigDB. Each script trains a Word2Vec model on network or gene set “sentences” and writes a comma-separated file with one row per gene.
 

@@ -118,10 +118,18 @@ The CellNet workflow filters TF→target edges by `zscore` and absolute `correla
 
 ```bash
 # minimal wrapper
-python gene_vec_model_cellnet_tf_network.py --input_csv ../data/human_tf_network_cellnet_converted_entrez.csv   --output_prefix ../data/cellnet_filtered
+python gene_vec_model_cellnet_tf_network.py --input_csv ../data/human_tf_network_cellnet_converted_entrez.csv \
+  --output_prefix ../data/cellnet_filtered
 
 # with thresholds and training params
-python gene_vec_model_cellnet_tf_network.py   --input_csv ../data/human_tf_network_cellnet_converted_entrez.csv   --output_prefix ../data/cellnet_filtered   --zscore_thr 3   --corr_thr 0.3   --vector_size 128   --window 5   --epochs 10
+python gene_vec_model_cellnet_tf_network.py \
+  --input_csv ../data/human_tf_network_cellnet_converted_entrez.csv \
+  --output_prefix ../data/cellnet_filtered \
+  --zscore_thr 3 \
+  --corr_thr 0.3 \
+  --vector_size 128 \
+  --window 5 \
+  --epochs 10
 ```
 
 ## dorothea human TF network
@@ -129,7 +137,14 @@ python gene_vec_model_cellnet_tf_network.py   --input_csv ../data/human_tf_netwo
 DoRothEA uses both the confidence grade and mode of regulation. Confidence letters are mapped to numeric weights, which are multiplied by `mor`. Negative regulation is encoded by prefixing targets with `inhib_`. Sentences begin with the TF token followed by repeated target tokens based on a replication rule. Output is `<output_prefix>_entrez_embeddings.csv`.
 
 ```bash
-python gene_vec_model_dorothea_network.py   --input_csv ../data/dorothea_network_human_converted_entrez.csv   --output_prefix ../data/dorothea_embeddings   --replication_factor 10   --weight_thr 0.0   --vector_size 128   --window 5   --epochs 10
+python gene_vec_model_dorothea_network.py \
+  --input_csv ../data/dorothea_network_human_converted_entrez.csv \
+  --output_prefix ../data/dorothea_embeddings \
+  --replication_factor 10 \
+  --weight_thr 0.0 \
+  --vector_size 128 \
+  --window 5 \
+  --epochs 10
 ```
 
 ## collectri human TF network
@@ -137,7 +152,14 @@ python gene_vec_model_dorothea_network.py   --input_csv ../data/dorothea_network
 CollecTRI uses the mode of regulation as the effective edge weight. Negative edges are marked with `inhib_`. Sentences start with the source TF, then repeated target tokens based on `abs(mor) * replication_factor`. Output is `<output_prefix>_entrez_embeddings.csv`.
 
 ```bash
-python gene_vec_model_collectri_network.py   --input_csv ../data/collectri_network_human_converted_entrez.csv   --output_prefix ../data/collectri_embeddings   --replication_factor 10   --weight_thr 0.0   --vector_size 128   --window 5   --epochs 10
+python gene_vec_model_collectri_network.py \
+  --input_csv ../data/collectri_network_human_converted_entrez.csv \
+  --output_prefix ../data/collectri_embeddings \
+  --replication_factor 10 \
+  --weight_thr 0.0 \
+  --vector_size 128 \
+  --window 5 \
+  --epochs 10
 ```
 
 ## msigdb bundle embeddings
@@ -149,7 +171,22 @@ Provide one or more `.gmx` files. Each column in a `.gmx` file is treated as a g
 pip install mygene
 
 # folder of .gmx files
-python gene_vec_model_msigdB_bundle.py   --input ../data/   --outfile ../data/msigdb_bundle_embeddings   --vector_size 256   --window 5   --epochs 10   --convert
+# install once if you want Entrez conversion
+pip install mygene
+
+# folder of .gmx files
+python gene_vec_model_msigdB_bundle.py \
+  --input ../data/ \
+  --outfile ../data/msigdb_bundle_embeddings \
+  --vector_size 256 \
+  --window 5 \
+  --epochs 10 \
+  --convert
+
+# outputs:
+#   ../data/msigdb_bundle_embeddings_symbol.csv
+#   ../data/msigdb_bundle_embeddings_entrez.csv
+t
 
 # outputs:
 #   ../data/msigdb_bundle_embeddings_symbol.csv

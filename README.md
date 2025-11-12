@@ -108,6 +108,63 @@ TP53,0.12,0.07,0.03,...
 
 ---
 
+# training embeddings
+
+This section describes how to generate NEWT’s embedding CSVs for CellNet, DoRothEA, CollecTRI, and MSigDB. Each script trains a Word2Vec model on network or gene set “sentences” and writes a comma-separated file with one row per gene.
+
+## cellnet human TF network
+
+The CellNet workflow filters TF→target edges by `zscore` and absolute `correlation`, then learns embeddings from the remaining edges. Input CSV must contain `TF`, `Target`, `zscore`, and `correlation` columns, all using Entrez IDs. Output is `<output_prefix>_entrez_embeddings.csv`.
+
+```bash
+# minimal wrapper
+python gene_vec_model_cellnet_tf_network.py --input_csv ../data/human_tf_network_cellnet_converted_entrez.csv   --output_prefix ../data/cellnet_filtered
+
+# with thresholds and training params
+python gene_vec_model_cellnet_tf_network.py   --input_csv ../data/human_tf_network_cellnet_converted_entrez.csv   --output_prefix ../data/cellnet_filtered   --zscore_thr 3   --corr_thr 0.3   --vector_size 128   --window 5   --epochs 10
+```
+
+## dorothea human TF network
+
+DoRothEA uses both the confidence grade and mode of regulation. Confidence letters are mapped to numeric weights, which are multiplied by `mor`. Negative regulation is encoded by prefixing targets with `inhib_`. Sentences begin with the TF token followed by repeated target tokens based on a replication rule. Output is `<output_prefix>_entrez_embeddings.csv`.
+
+```bash
+python gene_vec_model_dorothea_network.py   --input_csv ../data/dorothea_network_human_converted_entrez.csv   --output_prefix ../data/dorothea_embeddings   --replication_factor 10   --weight_thr 0.0   --vector_size 128   --window 5   --epochs 10
+```
+
+## collectri human TF network
+
+CollecTRI uses the mode of regulation as the effective edge weight. Negative edges are marked with `inhib_`. Sentences start with the source TF, then repeated target tokens based on `abs(mor) * replication_factor`. Output is `<output_prefix>_entrez_embeddings.csv`.
+
+```bash
+python gene_vec_model_collectri_network.py   --input_csv ../data/collectri_network_human_converted_entrez.csv   --output_prefix ../data/collectri_embeddings   --replication_factor 10   --weight_thr 0.0   --vector_size 128   --window 5   --epochs 10
+```
+
+## msigdb bundle embeddings
+
+Provide one or more `.gmx` files. Each column in a `.gmx` file is treated as a gene set sentence, and all sets across files are combined to train embeddings. The script writes two files, symbols and Entrez, when `--convert` is set. Entrez conversion requires `mygene`.
+
+```bash
+# install once if you want Entrez conversion
+pip install mygene
+
+# folder of .gmx files
+python gene_vec_model_msigdB_bundle.py   --input ../data/   --outfile ../data/msigdb_bundle_embeddings   --vector_size 256   --window 5   --epochs 10   --convert
+
+# outputs:
+#   ../data/msigdb_bundle_embeddings_symbol.csv
+#   ../data/msigdb_bundle_embeddings_entrez.csv
+```
+
+## notes and tips
+
+- All TF network inputs must already use Entrez IDs for TF and target gene identifiers. The DoRothEA script translates confidence letters to numeric weights internally and encodes inhibitory edges, so you do not need to pre-process those aspects.
+- The CellNet script requires both `zscore` and `correlation` fields, and applies thresholds before training. This step reduces noise and defines the training corpus.
+- All four scripts write a single CSV per run containing one row per gene token and the embedding vector, which is exactly what the classifier and L1000 model loaders expect.
+
+
+---
+
 ## 🚀 Usage Examples
 
 All examples assume execution from the repo root (`NEWT/`).  

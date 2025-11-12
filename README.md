@@ -63,7 +63,12 @@ NEWT/
 │       ├── l1000_model_v5_merged_embeddings_v8_collectri_fixed.py
 │       ├── recall_improved_shRNA_merged_metrics_cell_line_v8.py
 │       ├── scanpy_clustering_v16c.py
-│       └── export_graphml_ATC_subnetworks_v5_shRNA.py
+│       ├── export_graphml_ATC_subnetworks_v5_shRNA.py
+│       ├── gene_vec_model_cellnet_tf_network.py
+│       ├── gene_vec_model_dorothea_network.py
+│       ├── gene_vec_model_collectri_network.py
+│       └── gene_vec_model_msigdB_bundle.py
+│
 ├── data/
 │   ├── gene_vec_go_256.csv
 │   ├── gene_vec_archs4_256.csv
@@ -76,6 +81,7 @@ NEWT/
 │   ├── compound_list_shRNA.txt
 │   ├── cpd_gene_pairs.csv
 │   └── L1000_PhaseI_and_II.csv
+│
 ├── results/
 ├── saved_model/
 └── environment.yml

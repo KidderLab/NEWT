@@ -105,6 +105,8 @@ TP53,0.12,0.07,0.03,...
 - `cellnet_filtered_entrez_embeddings.csv`
 - `dorothea_embeddings_entrez_embeddings.csv`
 - `collectri_embeddings_entrez_embeddings.csv`
+- `gene_to_go_top.csv`
+- `term2gene_id.csv`
 
 ### Metadata files
 - `tissue_specific.txt`

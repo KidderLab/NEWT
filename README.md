@@ -383,7 +383,7 @@ If you use NEWT in your research, please cite:
 
 and acknowledge this repository as:
 
-> **Kidder, B.L.** NEWT: Neural Embeddings for Wide-spectrum Targeting. GitHub (2025). [https://github.com/benjohnsonlab/NEWT](https://github.com/benjohnsonlab/NEWT)
+> **Kidder, B.L.** NEWT: Neural Embeddings for Wide-spectrum Targeting. GitHub (2025). [https://github.com/KidderLab/NEWT](https://github.com/KidderLab/NEWT)
 
 ---
 

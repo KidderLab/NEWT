@@ -18,6 +18,8 @@ dependencies:
   - scanpy
   - leidenalg
   - python-igraph
+  - igraph
+  - libstdcxx-ng
   - pip
   - pip:
     - mygene

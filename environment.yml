@@ -19,3 +19,5 @@ dependencies:
   - leidenalg
   - python-igraph
   - pip
+  - pip:
+    - mygene

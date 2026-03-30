@@ -7,15 +7,6 @@ Example script to:
 3) Train Word2Vec embeddings on the remaining TF->Target edges.
 4) Output embeddings to a CSV file.
 
-Usage:
-  python train_cellnet_entrez_embeddings.py \
-    --input_csv human_tf_network_cellnet_converted_entrez.csv \
-    --output_prefix cellnet_filtered \
-    --zscore_thr 3 \
-    --corr_thr 0.3 \
-    --vector_size 128 \
-    --window 5 \
-    --epochs 10
 """
 
 import argparse

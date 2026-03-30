@@ -279,15 +279,15 @@ python scripts/classifier_improved_fusion_v13_collectri_dorothea_no_strict.py \
   --fusion_epochs 30 \
   --fusion_patience 5 \
   --batch_size 16 \
-  --default_file ../data/gene_vec_go_256.csv \
-  --archs4_file ../data/gene_vec_archs4_256.csv \
-  --ppi_file ../data/learned_gene_embeddings_go_graph.csv \
-  --msigdb_file ../data/msigdb_bundle_embeddings_entrez.csv \
-  --cellnet_file ../data/cellnet_filtered_entrez_embeddings.csv \
-  --dorothea_file ../data/dorothea_embeddings_entrez_embeddings.csv \
-  --collectri_file ../data/collectri_embeddings_entrez_embeddings.csv \
+  --default_file data/gene_vec_go_256.csv \
+  --archs4_file data/gene_vec_archs4_256.csv \
+  --ppi_file data/learned_gene_embeddings_go_graph.csv \
+  --msigdb_file data/msigdb_bundle_embeddings_entrez.csv \
+  --cellnet_file data/cellnet_filtered_entrez_embeddings.csv \
+  --dorothea_file data/dorothea_embeddings_entrez_embeddings.csv \
+  --collectri_file data/collectri_embeddings_entrez_embeddings.csv \
   --cellnet_dim 256 \
-  --tissue_file ../data/tissue_specific.txt
+  --tissue_file data/tissue_specific.txt
 ```
 
 **Outputs:**  
@@ -334,19 +334,19 @@ newt l1000 \
 
 ```bash
 python newt/scripts/l1000_model_v5_merged_embeddings_v8_collectri_fixed.py \
-  --cpdlist_file  ../data/compound_list_shRNA.txt \
-  --target_file   ../data/cpd_gene_pairs.csv \
-  --sig_file      ../data/L1000_PhaseI_and_II.csv \
+  --cpdlist_file  data/compound_list_shRNA.txt \
+  --target_file   data/cpd_gene_pairs.csv \
+  --sig_file      data/L1000_PhaseI_and_II.csv \
   --perttype      shRNA \
   --epochs        60 \
-  --emb_go        ../data/gene_vec_go_256.csv \
-  --emb_archs4    ../data/gene_vec_archs4_256.csv \
-  --emb_cellnet   ../data/cellnet_filtered_entrez_embeddings.csv \
-  --emb_collectri ../data/collectri_embeddings_entrez_embeddings.csv \
-  --emb_msigdb    ../data/msigdb_bundle_embeddings_entrez.csv \
-  --emb_ppi       ../data/learned_gene_embeddings_go_graph.csv \
-  --outdir        ../results/results_merged_multimodal_test2_shRNA \
-  --modeldir      ../saved_model/merged_multimodal_test2_shRNA \
+  --emb_go        data/gene_vec_go_256.csv \
+  --emb_archs4    data/gene_vec_archs4_256.csv \
+  --emb_cellnet   data/cellnet_filtered_entrez_embeddings.csv \
+  --emb_collectri data/collectri_embeddings_entrez_embeddings.csv \
+  --emb_msigdb    data/msigdb_bundle_embeddings_entrez.csv \
+  --emb_ppi       data/learned_gene_embeddings_go_graph.csv \
+  --outdir        results/results_merged_multimodal_test2_shRNA \
+  --modeldir      saved_model/merged_multimodal_test2_shRNA \
   --predict_batch_size 1024
 ```
 

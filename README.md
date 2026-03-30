@@ -156,7 +156,7 @@ The CellNet workflow filters TF→target edges by `zscore` and absolute `correla
 
 ```bash
 # minimal wrapper
-python gene_vec_model_cellnet_tf_network.py --input_csv ../data/human_tf_network_cellnet_converted_entrez.csv \
+python newt/scripts/gene_vec_model_cellnet_tf_network.py --input_csv ../data/human_tf_network_cellnet_converted_entrez.csv \
   --output_prefix ../data/cellnet_filtered
 
 # with thresholds and training params

@@ -1,11 +1,5 @@
 #!/usr/bin/env python
 """
-Runs experiments using the "loose" approach only.
-
-The loose approach always requires the default modality and fills in missing other
-modalities (ppi, msigdb, dorothea, and collectri) with zeros if they are missing.
-This method retains many more genes compared to the strict approach.
-
 The script:
  - Iterates over combinations of modalities.
  - Trains a RandomForest classifier plus applies t-SNE on the raw embeddings.
@@ -15,8 +9,6 @@ The script:
      - Fused embeddings text file,
      - An aggregated JSON report,
      - An accuracy ranking file (all based solely on the loose approach).
-
-New modalities "dorothea" and "collectri" are included in various combinations.
 """
 
 import argparse

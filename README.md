@@ -69,7 +69,7 @@ mamba activate newt_env
 ```bash
 python -m pip install -e .
 
-mamba install -c conda-forge scanpy seaborn matplotlib scikit-learn pandas numpy
+mamba install -c conda-forge scanpy seaborn matplotlib scikit-learn pandas numpy gensim
 mamba install -c conda-forge leidenalg
 ```
 

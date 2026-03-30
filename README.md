@@ -417,20 +417,20 @@ Source: [https://github.com/chenhcs/FRoGS](https://github.com/chenhcs/FRoGS)
 
 If you use NEWT in your research, please cite:
 
-> Chen, H., King, F.J., Zhou, B. *et al.* Drug target prediction through deep learning functional representation of gene signatures. *Nature Communications* **15**, 1853 (2024). [https://doi.org/10.1038/s41467-024-46089-y](https://doi.org/10.1038/s41467-024-46089-y)
+> Kidder, B.L. *et al.* Multimodal gene embeddings enable prediction of drug targets and reconstruction of cellular states. *bioRxiv* (2026). https://www.biorxiv.org/content/10.64898/2026.02.13.689089v1
+
+> Chen, H., King, F.J., Zhou, B. *et al.* Drug target prediction through deep learning functional representation of gene signatures. *Nature Communications* **15**, 1853 (2024). https://doi.org/10.1038/s41467-024-46089-y
 
 and acknowledge this repository as:
 
-> **Kidder, B.L.** NEWT: Neural Embeddings for Wide-spectrum Targeting. GitHub (2025). [https://github.com/KidderLab/NEWT](https://github.com/KidderLab/NEWT)
+> **Kidder, B.L.** NEWT: Neural Embeddings for Wide-spectrum Targeting. GitHub (2025). https://github.com/KidderLab/NEWT
 
 ---
 
 ## 💡 Acknowledgments
 
-We thank the authors of FRoGS for releasing their tools and pretrained embeddings under the MIT license.  
-Their work inspired NEWT’s multimodal embedding design philosophy.
-
-> FRoGS GitHub: [https://github.com/chenhcs/FRoGS](https://github.com/chenhcs/FRoGS)
+This work builds on publicly available gene embedding resources and prior efforts in integrating transcriptomic signatures for target prediction.  
+Relevant tools and datasets were used in accordance with their respective licenses.
 
 ## 🧩 Contact
 

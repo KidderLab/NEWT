@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 """
-export_graphml_ATC_subnetworks_v9.py
-
 Creates a directory hierarchy under OUTPUT_DIR reflecting ATC levels:
   • Level-1 main classes (A, B, C, …): filtered top-10 network + CSVs
   • Level-2 subgroups (e.g. A01, B02…): filtered top-10 network + CSVs
@@ -16,7 +14,7 @@ import networkx as nx
 
 # — USER CONFIGURATION —
 INPUT_DIR  = "./ct_network_exports_shRNA"
-ATC_FILE   = "../data/WHO_ATC_DDD_2024-07-31.csv"
+ATC_FILE   = "data/WHO_ATC_DDD_2024-07-31.csv"
 OUTPUT_DIR = "./ct_network_exports_ATC_subnetworks_shRNA"
 
 

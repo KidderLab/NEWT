@@ -273,7 +273,7 @@ newt classifier \
 **Or** 
 
 ```bash
-python scripts/classifier_improved_fusion_v13_collectri_dorothea_no_strict.py \
+python newt/scripts/classifier_improved_fusion_v13_collectri_dorothea_no_strict.py \
   --outdir results/classifier \
   --fusion_method attention \
   --fusion_epochs 30 \

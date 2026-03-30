@@ -65,9 +65,9 @@ mamba activate newt_env
 
 ---
 
-### 3️⃣ Install NEWT (editable mode)
+### 3️⃣ Install NEWT 
 ```bash
-pip install -e .
+python -m pip install -e .
 
 mamba install -c conda-forge scanpy seaborn matplotlib scikit-learn pandas numpy
 mamba install -c conda-forge leidenalg

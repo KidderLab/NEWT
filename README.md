@@ -17,7 +17,34 @@
 
 ## ⚙️ Installation
 
-### 1️⃣ Create the environment
+### 1️⃣ Install Git LFS before cloning
+
+This repository uses **Git Large File Storage (Git LFS)** for large embedding and data files.  
+You must install Git LFS **before cloning** the repository to ensure all files download correctly.
+
+**Option 1, install via mamba or conda**
+```bash
+mamba install -c conda-forge git-lfs
+# or
+conda install -c conda-forge git-lfs
+git lfs install
+```
+
+**Option 2, install system-wide (recommended for WSL or cluster environments)**
+```bash
+sudo apt update
+sudo apt install git-lfs -y
+git lfs install
+```
+
+**Verify installation**
+```bash
+git lfs --version
+```
+
+---
+
+### 2️⃣ Clone repository and create the environment
 ```bash
 git clone https://github.com/KidderLab/NEWT.git
 cd NEWT
@@ -36,7 +63,9 @@ mamba env create -f environment.yml
 mamba activate newt_env
 ```
 
-### 2️⃣ Install NEWT (editable mode)
+---
+
+### 3️⃣ Install NEWT (editable mode)
 ```bash
 pip install -e .
 
@@ -44,11 +73,12 @@ mamba install -c conda-forge scanpy seaborn matplotlib scikit-learn pandas numpy
 mamba install -c conda-forge leidenalg
 ```
 
-### 3️⃣ For headless plotting
-If you run on a cluster or server with no display:
+---
+
+### ⚠️ If you cloned before installing Git LFS
 ```bash
-export MPLBACKEND=Agg
-export QT_QPA_PLATFORM=offscreen
+git lfs pull
+git restore --source=HEAD :/
 ```
 
 ---

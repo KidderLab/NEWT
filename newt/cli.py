@@ -47,9 +47,9 @@ def recall_cmd(args):
 @click.argument("args", nargs=-1, type=click.UNPROCESSED)
 def cluster_cmd(args):
     "Run Scanpy-based clustering and plotting."
--    code = run_external("scanpy_clustering_v16c.py", list(args))
-+    from ._utils import run_vendored
-+    code = run_vendored("scanpy_clustering_v16c.py", list(args))
+    code = run_external("scanpy_clustering_v16c.py", list(args))
+    from ._utils import run_vendored
+    code = run_vendored("scanpy_clustering_v16c.py", list(args))
     raise SystemExit(code)
 
 if __name__ == "__main__":

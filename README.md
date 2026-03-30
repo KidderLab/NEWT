@@ -175,9 +175,9 @@ python newt/scripts/gene_vec_model_cellnet_tf_network.py \
 DoRothEA uses both the confidence grade and mode of regulation. Confidence letters are mapped to numeric weights, which are multiplied by `mor`. Negative regulation is encoded by prefixing targets with `inhib_`. Sentences begin with the TF token followed by repeated target tokens based on a replication rule. Output is `<output_prefix>_entrez_embeddings.csv`.
 
 ```bash
-python gene_vec_model_dorothea_network.py \
-  --input_csv ../data/dorothea_network_human_converted_entrez.csv \
-  --output_prefix ../data/dorothea_embeddings \
+python newt/scripts/gene_vec_model_dorothea_network.py \
+  --input_csv data/dorothea_network_human_converted_entrez.csv \
+  --output_prefix data/dorothea_embeddings \
   --replication_factor 10 \
   --weight_thr 0.0 \
   --vector_size 128 \
@@ -190,9 +190,9 @@ python gene_vec_model_dorothea_network.py \
 CollecTRI uses the mode of regulation as the effective edge weight. Negative edges are marked with `inhib_`. Sentences start with the source TF, then repeated target tokens based on `abs(mor) * replication_factor`. Output is `<output_prefix>_entrez_embeddings.csv`.
 
 ```bash
-python gene_vec_model_collectri_network.py \
-  --input_csv ../data/collectri_network_human_converted_entrez.csv \
-  --output_prefix ../data/collectri_embeddings \
+python newt/scripts/gene_vec_model_collectri_network.py \
+  --input_csv data/collectri_network_human_converted_entrez.csv \
+  --output_prefix data/collectri_embeddings \
   --replication_factor 10 \
   --weight_thr 0.0 \
   --vector_size 128 \

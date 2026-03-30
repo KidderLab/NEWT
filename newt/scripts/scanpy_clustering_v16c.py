@@ -1,12 +1,4 @@
 #!/usr/bin/env python3
-# =============================================================================
-# scanpy_clustering_v16c.py  (diagnostic + robust)
-# - Keeps ALL original outputs/plots and file names
-# - Headless plotting (Agg) + timestamped outdir
-# - Restores 'skip first CSV row' behavior to match original loader
-# - Adds verbose logging of how many vectors were loaded per source
-# - Fails loudly if improved embeddings are empty (prevents silent degenerate plots)
-# =============================================================================
 
 import os
 import csv

@@ -370,30 +370,38 @@ Generates summary tables of recall, precision, and AUC scores for each experimen
 ### 📦 E) ATC Subnetwork Export (shRNA)
 Generates WHO ATC–classified GraphML subnetworks and per-subnetwork target lists from shRNA compound–target predictions.
 
-```bash
-# Export ATC subnetworks
-python newt/scripts/export_graphml_ATC_subnetworks_v5_shRNA.py
+> ⚠️ This step requires prior aggregation of NEWT prediction outputs into compound–target CSV networks.
 
-# Optional: move into export folder and copy per-subnetwork target lists
-cd ct_network_exports_ATC_subnetworks_shRNA
-python copy_graphml_targets.py
+#### 1️⃣ Aggregate NEWT predictions → network CSVs
+```bash
+python aggregate_ct_networks_v2_fixed.py \
+  --results-parent results/results_merged_multimodal_test2_shRNA/ \
+  --export-dir ct_network_exports_shRNA \
+  --cpd-gene-pairs data/cpd_gene_pairs.csv \
+  --term2gene data/term2gene_id.csv \
+  --agg-method min
 ```
 
-**Outputs:**  
-Creates hierarchical ATC folders (levels 1–3) with top‑10 filtered and full GraphMLs plus corresponding CSVs.
+#### 2️⃣ Export ATC subnetworks
+```bash
+python newt/scripts/export_graphml_ATC_subnetworks_v5_shRNA.py
+```
 
 ---
 
-## 🧰 Troubleshooting
+### ⚠️ WHO ATC data requirement
 
-**Qt/xcb plugin errors:**  
-```
-export MPLBACKEND=Agg
-export QT_QPA_PLATFORM=offscreen
-```
+This step requires the WHO ATC/DDD classification file (e.g. `WHO_ATC_DDD_2024-07-31.csv`).
 
-**Missing files:**  
-The script logs missing embeddings or metadata if paths are incorrect.
+- This file is **not distributed with the repository** due to licensing restrictions.
+- Users must download it directly from:
+  https://www.whocc.no/atc_ddd_index/
+- Place the file in the `data/` directory before running the export script.
+
+---
+
+**Outputs:**  
+Creates hierarchical ATC folders (levels 1–3) with top-10 filtered and full GraphMLs, along with corresponding compound–target CSV files and optional per-subnetwork target lists.
 
 ---
 

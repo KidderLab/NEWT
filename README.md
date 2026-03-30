@@ -427,6 +427,17 @@ and acknowledge this repository as:
 
 ---
 
+
+## 📦 Data availability
+
+Datasets required for training and reproducing NEWT analyses are available on Zenodo:
+
+> Kidder, B.L. NEWT datasets and preprocessing resources. Zenodo (2026). https://doi.org/10.5281/zenodo.19340318
+
+These include curated gene embeddings, processed L1000 perturbation data, and supporting resources used in this study.
+
+---
+
 ## 💡 Acknowledgments
 
 This work builds on publicly available gene embedding resources and prior efforts in integrating transcriptomic signatures for target prediction.  

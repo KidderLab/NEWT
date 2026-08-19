@@ -285,24 +285,10 @@ python newt/scripts/classifier_improved_fusion_v13_collectri_dorothea_no_strict.
 **Outputs:**  
 Stores training results in `results/fusion_YYYYmmdd_HHMM/`, including accuracy, loss plots, and fusion model weights.
 
----
-
-### 🧬 B) Scanpy clustering (PBMC3k demo)
-Runs a lightweight Scanpy pipeline to generate PCA, UMAP, and multimodal clustering visualizations, serving as a test for environment setup and plotting utilities.
-
-```bash
-python newt/scripts/scanpy_clustering_v16c.py \
-  --data_dir data/ \
-  --outdir results/newt_scanpy_figures
-```
-
-**Outputs:**  
-Generates UMAP and PCA visualizations saved to `results/newt_scanpy_figures_YYYYMMDD_HHMM/`.  
-Useful for validating plotting functions and cluster quality.
 
 ---
 
-### 🧪 C) L1000 target model (shRNA)
+### 🧪 B) L1000 target model (shRNA)
 Builds compound–target prediction models using L1000 gene expression data and multimodal embeddings.
 
 ```bash
@@ -347,7 +333,7 @@ Creates ranked compound–target prediction files (`BRD-XXXX@CELL_shRNA.txt`) in
 
 ---
 
-### 📈 D) Recall metrics
+### 📈 C) Recall metrics
 Computes recall and precision metrics for all result folders to benchmark performance across multimodal fusion variants.
 
 ```bash
@@ -359,7 +345,7 @@ Generates summary tables of recall, precision, and AUC scores for each experimen
 
 ---
 
-### 📦 E) ATC Subnetwork Export (shRNA)
+### 📦 D) ATC Subnetwork Export (shRNA)
 Generates WHO ATC–classified GraphML subnetworks and per-subnetwork target lists from shRNA compound–target predictions.
 
 > ⚠️ This step requires prior aggregation of NEWT prediction outputs into compound–target CSV networks.

@@ -27,6 +27,7 @@ You must install Git LFS **before cloning** the repository to ensure all files d
 mamba install -c conda-forge git-lfs
 # or
 conda install -c conda-forge git-lfs
+
 git lfs install
 ```
 
@@ -46,21 +47,17 @@ git lfs --version
 
 ### 2️⃣ Clone repository and create the environment
 ```bash
+# Using mamba:
 git clone https://github.com/KidderLab/NEWT.git
 cd NEWT
 mamba env create -f environment.yml
-mamba activate newt_env
-# or:
+conda activate newt_env
+
+# Alternatively, using conda:
+git clone https://github.com/KidderLab/NEWT.git
+cd NEWT
 conda env create -f environment.yml
 conda activate newt_env
-```
-
-If you previously created `newt_env` and want a clean slate:
-```bash
-mamba deactivate
-mamba env remove -n newt_env
-mamba env create -f environment.yml
-mamba activate newt_env
 ```
 
 ---
@@ -70,16 +67,18 @@ mamba activate newt_env
 python -m pip install -r requirements.txt
 python -m pip install -e .
 
-mamba install -c conda-forge scanpy seaborn matplotlib scikit-learn pandas numpy gensim
-mamba install -c conda-forge leidenalg
+#Verify the installation:
+python -m pip check
+newt --version
+newt --help
 ```
 
 ---
 
-### ⚠️ If you cloned before installing Git LFS
+### ⚠️ If the repository was cloned before Git LFS was installed
 ```bash
+git lfs install
 git lfs pull
-git restore --source=HEAD :/
 ```
 
 ---
@@ -220,10 +219,9 @@ python gene_vec_model_msigdB_bundle.py \
   --convert
 
 # outputs:
-#   ../data/msigdb_bundle_embeddings_symbol.csv
+#  data/msigdb_bundle_embeddings_symbol.csv
+#  data/msigdb_bundle_embeddings_entrez.csv
 
-# outputs:
-#   ../data/msigdb_bundle_embeddings_symbol.csv
 ```
 
 ## notes and tips
@@ -368,7 +366,7 @@ Generates WHO ATC–classified GraphML subnetworks and per-subnetwork target lis
 
 #### 1️⃣ Aggregate NEWT predictions → network CSVs
 ```bash
-python aggregate_ct_networks_v2_fixed.py \
+python newt/scripts/aggregate_ct_networks_v2_fixed.py \
   --results-parent results/results_merged_multimodal_test2_shRNA/ \
   --export-dir ct_network_exports_shRNA \
   --cpd-gene-pairs data/cpd_gene_pairs.csv \

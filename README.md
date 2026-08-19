@@ -67,6 +67,7 @@ mamba activate newt_env
 
 ### 3️⃣ Install NEWT 
 ```bash
+python -m pip install -r requirements.txt
 python -m pip install -e .
 
 mamba install -c conda-forge scanpy seaborn matplotlib scikit-learn pandas numpy gensim
@@ -157,7 +158,7 @@ The CellNet workflow filters TF→target edges by `zscore` and absolute `correla
 ```bash
 # minimal wrapper
 python newt/scripts/gene_vec_model_cellnet_tf_network.py --input_csv data/human_tf_network_cellnet_converted_entrez.csv \
-  --output_prefix ../data/cellnet_filtered
+  --output_prefix data/cellnet_filtered
 
 # with thresholds and training params
 python newt/scripts/gene_vec_model_cellnet_tf_network.py \
@@ -205,9 +206,6 @@ python newt/scripts/gene_vec_model_collectri_network.py \
 Provide one or more `.gmx` files. Each column in a `.gmx` file is treated as a gene set sentence, and all sets across files are combined to train embeddings. The script writes two files, symbols and Entrez, when `--convert` is set. Entrez conversion requires `mygene`.
 
 ```bash
-# install once if you want Entrez conversion
-pip install mygene
-
 # folder of .gmx files
 # install once if you want Entrez conversion
 pip install mygene
@@ -215,7 +213,7 @@ pip install mygene
 # folder of .gmx files
 python gene_vec_model_msigdB_bundle.py \
   --input ../data/ \
-  --outfile ../data/msigdb_bundle_embeddings \
+  --outfile data/msigdb_bundle_embeddings \
   --vector_size 256 \
   --window 5 \
   --epochs 10 \
@@ -223,12 +221,9 @@ python gene_vec_model_msigdB_bundle.py \
 
 # outputs:
 #   ../data/msigdb_bundle_embeddings_symbol.csv
-#   ../data/msigdb_bundle_embeddings_entrez.csv
-t
 
 # outputs:
 #   ../data/msigdb_bundle_embeddings_symbol.csv
-#   ../data/msigdb_bundle_embeddings_entrez.csv
 ```
 
 ## notes and tips
@@ -251,7 +246,6 @@ Adjust `../` prefixes if running from within a subdirectory.
 Trains a multimodal attention-based fusion model that integrates GO, MSigDB, CellNet, and PPI embeddings to classify tissue or lineage signatures.
 
 ```bash
-cd newt
 
 newt classifier \
   --outdir results/classifier \

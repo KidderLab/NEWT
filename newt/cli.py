@@ -5,7 +5,7 @@ the package. Run ``newt COMMAND --help`` to inspect command-specific options.
 """
 
 import click
-from ._utils import run_vendored, run_external
+from ._utils import run_vendored
 
 CTX = dict(help_option_names=["-h", "--help"], ignore_unknown_options=True, allow_extra_args=True)
 
@@ -46,18 +46,14 @@ def tsne_combos_cmd(args):
 @main.command(context_settings=CTX, name="recall")
 @click.argument("args", nargs=-1, type=click.UNPROCESSED)
 def recall_cmd(args):
-    """Run target-recall evaluation from the current directory or PATH."""
-    code = run_external("recall_improved_shRNA_merged_metrics_cell_line_v8.py", list(args))
-    raise SystemExit(code)
+    """Run target-recall evaluation."""
+    passthrough("recall_improved_shRNA_merged_metrics_cell_line_v8.py", args)
 
 @main.command(context_settings=CTX, name="cluster")
 @click.argument("args", nargs=-1, type=click.UNPROCESSED)
 def cluster_cmd(args):
     """Run Scanpy-based downstream clustering diagnostics and plots."""
-    code = run_external("scanpy_clustering_v16c.py", list(args))
-    from ._utils import run_vendored
-    code = run_vendored("scanpy_clustering_v16c.py", list(args))
-    raise SystemExit(code)
+    passthrough("scanpy_clustering_v16c.py", args)
 
 if __name__ == "__main__":
     main()

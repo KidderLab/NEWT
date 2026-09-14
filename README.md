@@ -210,8 +210,8 @@ Provide one or more `.gmx` files. Each column in a `.gmx` file is treated as a g
 pip install mygene
 
 # folder of .gmx files
-python gene_vec_model_msigdB_bundle.py \
-  --input ../data/ \
+python newt/scripts/gene_vec_model_msigdB_bundle.py \
+  --input data/ \
   --outfile data/msigdb_bundle_embeddings \
   --vector_size 256 \
   --window 5 \
@@ -337,7 +337,10 @@ Creates ranked compound–target prediction files (`BRD-XXXX@CELL_shRNA.txt`) in
 Computes recall and precision metrics for all result folders to benchmark performance across multimodal fusion variants.
 
 ```bash
-python newt/scripts/recall_improved_shRNA_merged_metrics_cell_line_v8.py
+newt recall -- \
+  --results-root results \
+  --input-folder results_merged_multimodal_test2_shRNA \
+  --compound-targets data/cpd_gene_pairs.csv
 ```
 
 **Outputs:**  
@@ -362,7 +365,10 @@ python newt/scripts/aggregate_ct_networks_v2_fixed.py \
 
 #### 2️⃣ Export ATC subnetworks
 ```bash
-python newt/scripts/export_graphml_ATC_subnetworks_v5_shRNA.py
+newt atc-shrna -- \
+  --input-dir ct_network_exports_shRNA \
+  --atc-file data/WHO_ATC_DDD_2024-07-31.csv \
+  --output-dir ct_network_exports_ATC_subnetworks_shRNA
 ```
 
 ---

@@ -1,8 +1,11 @@
+"""Utilities for locating and launching NEWT workflow scripts."""
+
 import sys, subprocess, shutil
 from importlib import resources
 from pathlib import Path
 
 def get_script_path(name: str) -> str | None:
+    """Return the installed path of a script bundled in ``newt.scripts``."""
     try:
         with resources.as_file(resources.files("newt.scripts") / name) as p:
             return str(p)
@@ -10,6 +13,7 @@ def get_script_path(name: str) -> str | None:
         return None
 
 def run_vendored(name: str, args: list[str]) -> int:
+    """Execute a bundled script with the active Python interpreter."""
     script = get_script_path(name)
     if script is None or not Path(script).exists():
         raise FileNotFoundError(f"Vendored script not found: {name}")
@@ -17,6 +21,7 @@ def run_vendored(name: str, args: list[str]) -> int:
     return subprocess.call(cmd)
 
 def run_external(script_name: str, args: list[str]) -> int:
+    """Execute a script found in the current directory or executable PATH."""
     p = Path.cwd() / script_name
     if p.exists():
         return subprocess.call([sys.executable, "-u", str(p)] + list(args))

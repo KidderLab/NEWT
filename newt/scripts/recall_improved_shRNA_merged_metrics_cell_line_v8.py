@@ -9,6 +9,7 @@ metrics, performs paired comparisons, and writes summary plots and tables.
 import os
 import re
 import math
+import argparse
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -18,33 +19,6 @@ import logging
 
 #python newt/scripts/recall_improved_shRNA_merged_metrics_cell_line_v8.py
 
-# ====== CONFIGURATION ======
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-
-# Default-shRNA baseline
-FOLDER_DEFAULT = os.path.join(PROJECT_ROOT, "results", "default_shRNA")
-
-# Ask user which results folder to analyze
-results_root = os.path.join(PROJECT_ROOT, "results")
-print("\nAvailable folders in 'results/':")
-for d in sorted(os.listdir(results_root)):
-    if os.path.isdir(os.path.join(results_root, d)):
-        print("  •", d)
-
-user_choice = input(
-    "\nEnter folder name inside 'results/' to evaluate "
-    "(e.g. results_merged_multimodal_test2_shRNA): "
-).strip()
-
-if not user_choice:
-    raise SystemExit("No folder selected.")
-FOLDER_IMPROVED_ROOT = os.path.join(results_root, user_choice)
-if not os.path.isdir(FOLDER_IMPROVED_ROOT):
-    raise SystemExit(f"Folder not found: {FOLDER_IMPROVED_ROOT}")
-
-# Compound-target map
-CPD_GENE_PAIRS_CSV = os.path.join(PROJECT_ROOT, "data", "cpd_gene_pairs.csv")
-
 IGNORE_CELLS = ['VCAP']
 
 logging.basicConfig(
@@ -52,6 +26,57 @@ logging.basicConfig(
     format="%(asctime)s %(message)s",
     datefmt="%H:%M:%S"
 )
+
+
+def parse_args(argv=None):
+    """Parse reproducible input paths while retaining optional interactive selection."""
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    parser = argparse.ArgumentParser(
+        description="Evaluate known-target recovery for NEWT predictions."
+    )
+    parser.add_argument(
+        "--results-root",
+        default=os.path.join(project_root, "results"),
+        help="Directory containing the default and improved prediction folders.",
+    )
+    parser.add_argument(
+        "--input-folder",
+        help=(
+            "Improved-results folder name within --results-root, or an absolute path. "
+            "If omitted, the script prompts interactively."
+        ),
+    )
+    parser.add_argument(
+        "--default-folder",
+        default=None,
+        help="Default-prediction folder (default: RESULTS_ROOT/default_shRNA).",
+    )
+    parser.add_argument(
+        "--compound-targets",
+        default=os.path.join(project_root, "data", "cpd_gene_pairs.csv"),
+        help="Compound-to-known-target CSV.",
+    )
+    return parser.parse_args(argv)
+
+
+def resolve_improved_folder(results_root, input_folder):
+    """Resolve the selected improved-results folder, prompting only when necessary."""
+    if input_folder:
+        folder = input_folder if os.path.isabs(input_folder) else os.path.join(results_root, input_folder)
+    else:
+        if not os.path.isdir(results_root):
+            raise SystemExit(f"Results directory not found: {results_root}")
+        print("\nAvailable folders in 'results/':")
+        for name in sorted(os.listdir(results_root)):
+            if os.path.isdir(os.path.join(results_root, name)):
+                print("  -", name)
+        choice = input("\nEnter folder name inside 'results/' to evaluate: ").strip()
+        if not choice:
+            raise SystemExit("No folder selected.")
+        folder = os.path.join(results_root, choice)
+    if not os.path.isdir(folder):
+        raise SystemExit(f"Folder not found: {folder}")
+    return os.path.abspath(folder)
 
 def load_compound_targets(csv_path):
     """Load the reference mapping from compound identifiers to known Entrez targets."""
@@ -278,20 +303,28 @@ def plot_mosaic_cdf(per_line, odir):
     fig.savefig(os.path.join(odir, "mosaic_cdf.png"), dpi=300)
     plt.close(fig)
 
-def main():
+def main(argv=None):
     """Run per-cell-line and pooled recovery analyses and write all outputs."""
+    args = parse_args(argv)
+    results_root = os.path.abspath(args.results_root)
+    folder_default = os.path.abspath(
+        args.default_folder or os.path.join(results_root, "default_shRNA")
+    )
+    folder_improved_root = resolve_improved_folder(results_root, args.input_folder)
+    compound_targets_csv = os.path.abspath(args.compound_targets)
+
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    logging.info("Loading compound→target map from %s", CPD_GENE_PAIRS_CSV)
-    mapping = load_compound_targets(CPD_GENE_PAIRS_CSV)
+    logging.info("Loading compound-to-target map from %s", compound_targets_csv)
+    mapping = load_compound_targets(compound_targets_csv)
 
-    logging.info("Loading default predictions from %s", FOLDER_DEFAULT)
-    default_preds = load_predictions_by_cell_line(FOLDER_DEFAULT)
+    logging.info("Loading default predictions from %s", folder_default)
+    default_preds = load_predictions_by_cell_line(folder_default)
 
-    default_name = os.path.basename(os.path.normpath(FOLDER_DEFAULT))
+    default_name = os.path.basename(os.path.normpath(folder_default))
     improved_dirs = [
-        os.path.join(FOLDER_IMPROVED_ROOT, d)
-        for d in os.listdir(FOLDER_IMPROVED_ROOT)
-        if os.path.isdir(os.path.join(FOLDER_IMPROVED_ROOT, d)) and d != default_name
+        os.path.join(folder_improved_root, d)
+        for d in os.listdir(folder_improved_root)
+        if os.path.isdir(os.path.join(folder_improved_root, d)) and d != default_name
     ]
     logging.info("Found %d improved subfolders", len(improved_dirs))
 
@@ -301,7 +334,7 @@ def main():
 
         improved_preds = load_predictions_by_cell_line(imp_path)
         # Create output folder inside the selected results directory
-        BASE_OUT = os.path.join(FOLDER_IMPROVED_ROOT, "_metrics")
+        BASE_OUT = os.path.join(folder_improved_root, "_metrics")
         os.makedirs(BASE_OUT, exist_ok=True)
 
         out_dir = os.path.join(BASE_OUT, f"{name}_metrics_shRNA_{timestamp}")

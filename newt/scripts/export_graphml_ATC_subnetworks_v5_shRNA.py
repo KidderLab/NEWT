@@ -11,18 +11,18 @@ Targets CSVs have no header as requested.
 """
 import os
 import glob
+import argparse
 import pandas as pd
 import networkx as nx
 
-# — USER CONFIGURATION —
-INPUT_DIR  = "./ct_network_exports_shRNA"
-ATC_FILE   = "data/WHO_ATC_DDD_2024-07-31.csv"
-OUTPUT_DIR = "./ct_network_exports_ATC_subnetworks_shRNA"
+DEFAULT_INPUT_DIR = "./ct_network_exports_shRNA"
+DEFAULT_ATC_FILE = "data/WHO_ATC_DDD_2024-07-31.csv"
+DEFAULT_OUTPUT_DIR = "./ct_network_exports_ATC_subnetworks_shRNA"
 
 
-def load_atc_mapping():
+def load_atc_mapping(atc_file):
     """Load the WHO ATC table and derive level-1 and level-5 lookup tables."""
-    atc_all = pd.read_csv(ATC_FILE, dtype=str)
+    atc_all = pd.read_csv(atc_file, dtype=str)
     # Level-1 classes
     main = (
         atc_all[atc_all['atc_code'].str.len()==1]
@@ -40,10 +40,10 @@ def load_atc_mapping():
     return atc_all, main, subs7
 
 
-def load_all_interactions():
-    """Load and concatenate compound-target interaction CSVs from INPUT_DIR."""
+def load_all_interactions(input_dir):
+    """Load and concatenate compound-target interaction CSVs from input_dir."""
     dfs=[]
-    for f in sorted(glob.glob(os.path.join(INPUT_DIR,'*.csv'))):
+    for f in sorted(glob.glob(os.path.join(input_dir,'*.csv'))):
         df=pd.read_csv(f)
         req={'Query Pert ID','Compound Name','Symbol','Probability'}
         if not req.issubset(df.columns):
@@ -57,7 +57,7 @@ def load_all_interactions():
         df['cmpd_norm']=df['compound_name'].str.lower().str.strip()
         dfs.append(df)
     if not dfs:
-        raise FileNotFoundError(f"No CSVs in {INPUT_DIR}")
+        raise FileNotFoundError(f"No CSVs in {input_dir}")
     return pd.concat(dfs,ignore_index=True)
 
 
@@ -104,17 +104,17 @@ def export_csv(detail_df, targets, base, outdir, suffix=''):
     tgt_df.to_csv(tgt_file,index=False,header=False)
 
 
-def build_and_export():
+def build_and_export(input_dir, atc_file, output_dir):
     """Build ATC level 1-3 subnetworks and export filtered and full graph assets."""
-    atc_all, main, subs7 = load_atc_mapping()
-    df = load_all_interactions().merge(subs7, on='cmpd_norm', how='left').dropna(subset=['class'])
-    os.makedirs(OUTPUT_DIR,exist_ok=True)
+    atc_all, main, subs7 = load_atc_mapping(atc_file)
+    df = load_all_interactions(input_dir).merge(subs7, on='cmpd_norm', how='left').dropna(subset=['class'])
+    os.makedirs(output_dir,exist_ok=True)
 
     # Level-1
     for cls, grp in df.groupby('class'):
         cls_name=main.loc[main['class']==cls,'class_name'].iat[0]
         safe1=safe_name(cls_name)
-        dir1=os.path.join(OUTPUT_DIR,f"{cls}_{safe1}")
+        dir1=os.path.join(output_dir,f"{cls}_{safe1}")
         os.makedirs(dir1,exist_ok=True)
         df1_i=filter_top10(grp)
         if df1_i.empty: continue
@@ -181,5 +181,34 @@ def build_and_export():
                     df3_u['atc_code']=c3; df3_u['atc_name']=name3
                     export_csv(df3_u,df3_u['target'].unique(),f"{c3}_{safe3}_full",dir3)
 
+def parse_args(argv=None):
+    """Parse input and output paths for reproducible ATC-network export."""
+    parser = argparse.ArgumentParser(
+        description="Export shRNA-derived compound-target subnetworks by ATC class."
+    )
+    parser.add_argument(
+        "--input-dir",
+        default=DEFAULT_INPUT_DIR,
+        help="Directory containing compound-target interaction CSV files.",
+    )
+    parser.add_argument(
+        "--atc-file",
+        default=DEFAULT_ATC_FILE,
+        help="WHO ATC/DDD CSV containing atc_code and atc_name columns.",
+    )
+    parser.add_argument(
+        "--output-dir",
+        default=DEFAULT_OUTPUT_DIR,
+        help="Directory for GraphML files and CSV exports.",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv=None):
+    """Run the ATC subnetwork export from command-line arguments."""
+    args = parse_args(argv)
+    build_and_export(args.input_dir, args.atc_file, args.output_dir)
+
+
 if __name__=='__main__':
-    build_and_export()
+    main()

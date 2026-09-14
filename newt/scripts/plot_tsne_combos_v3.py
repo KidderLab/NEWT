@@ -121,7 +121,7 @@ def run_mosaic(Y, labels, color_map, out_png, combo_name):
     for ax in axes_flat[len(cats):]:
         fig.delaxes(ax)
 
-    fig.suptitle(f"{combo_name} – per‐category mosaic", y=1.02)
+    fig.suptitle(f"{combo_name} - per-category mosaic", y=1.02)
     plt.tight_layout()
     fig.savefig(out_png, dpi=300, bbox_inches='tight')
     plt.close(fig)
@@ -129,7 +129,7 @@ def run_mosaic(Y, labels, color_map, out_png, combo_name):
 def main():
     """Parse input paths and export global, per-category, and mosaic diagnostics."""
     parser = argparse.ArgumentParser(
-        description="t-SNE for each embedding combo + per‐category & mosaic plots"
+        description="t-SNE for each embedding combo + per-category and mosaic plots"
     )
     parser.add_argument('--emb_go',       required=True)
     parser.add_argument('--emb_archs4',   required=True)
@@ -183,7 +183,7 @@ def main():
 
         genes = merged.index.intersection(go_map.index)
         if len(genes) < 2:
-            print(f"  → skip '{combo_name}': only {len(genes)} overlapping genes", file=sys.stderr)
+            print(f"  -> skip '{combo_name}': only {len(genes)} overlapping genes", file=sys.stderr)
             continue
 
         X      = merged.loc[genes].values

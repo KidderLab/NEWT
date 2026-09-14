@@ -86,6 +86,7 @@ def load_tf_network_and_build_corpus(csv_file, replication_factor=10, weight_thr
     return list(sentences_dict.values())
 
 def main():
+    """Parse CLI arguments, train DoRothEA Word2Vec embeddings, and write a CSV."""
     parser = argparse.ArgumentParser(
         description="Train Word2Vec embeddings from a Dorothea network file using confidence and mor values. "
                     "The input CSV should have columns: TF, confidence, Target, mor."
@@ -142,4 +143,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

@@ -76,6 +76,7 @@ def load_tf_network_and_build_corpus(csv_file, replication_factor=10, weight_thr
     return list(sentences_dict.values())
 
 def main():
+    """Parse CLI arguments, train CollecTRI Word2Vec embeddings, and write a CSV."""
     parser = argparse.ArgumentParser(
         description="Train Word2Vec embeddings from a Collectri network file using the 'mor' value for weighting edges. "
                     "The input CSV should have columns: source, target, mor."
@@ -132,4 +133,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

@@ -82,10 +82,12 @@ def load_msigdB_inputs(input_path, delimiter="\t"):
     return all_sentences
 
 def train_embeddings(sentences, vector_size=256, window=5, min_count=1, epochs=10):
+    """Train and return a Word2Vec model for the supplied gene-set sentences."""
     model = Word2Vec(sentences, vector_size=vector_size, window=window, min_count=min_count, workers=4, epochs=epochs)
     return model.wv
 
 def save_embeddings(wv, symbol_outfile, entrez_outfile=None, convert=False):
+    """Write symbol embeddings and optionally an Entrez-converted embedding table."""
     with open(symbol_outfile, 'w') as f:
         for gene in wv.index_to_key:
             vec = wv[gene]
@@ -118,6 +120,7 @@ def save_embeddings(wv, symbol_outfile, entrez_outfile=None, convert=False):
         print(f"Entrez embeddings saved to {entrez_outfile}")
 
 def main():
+    """Parse CLI arguments, load MSigDB inputs, train embeddings, and save outputs."""
     parser = argparse.ArgumentParser(description="Generate gene embeddings from one or more MSigDB (.gmx) files.")
     parser.add_argument("--input", type=str, required=True,
                         help="Input MSigDB hallmark file (.gmx) or folder containing *.gmx files.")
@@ -148,4 +151,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

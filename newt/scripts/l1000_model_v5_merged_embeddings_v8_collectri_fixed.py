@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-L1000 Model V5 with merged embeddings and collectri fix.
+L1000 Model
 Memory-optimized inference with explicit GC and batch control.
 """
 
@@ -32,6 +32,7 @@ perttype = None
 
 
 def parse_args():
+    """Parse paths, training options, embedding sources, and output locations."""
     parser = argparse.ArgumentParser(
         description='Train & evaluate L1000 model with multiple embeddings',
         formatter_class=argparse.RawDescriptionHelpFormatter
@@ -56,6 +57,7 @@ def parse_args():
 
 
 def get_model(fp_dim, hidden_dim=2048):
+    """Build and compile the multilayer model used to reconstruct target embeddings."""
     left = keras.Input(shape=(fp_dim,))
     right = keras.Input(shape=(fp_dim,))
     shared = keras.Sequential([
@@ -77,6 +79,7 @@ def get_model(fp_dim, hidden_dim=2048):
 
 
 def compute_weight(matrix):
+    """Compute normalized magnitude weights for rows of an embedding matrix."""
     sim = cosine_similarity(matrix, matrix)
     sim[np.isnan(sim)] = 0
     mean = sim.mean(axis=1)
@@ -86,6 +89,7 @@ def compute_weight(matrix):
 
 
 def compute_list_emb(gene_list):
+    """Combine available source embeddings for a list of gene identifiers."""
     global CURRENT_EMBEDDINGS
     mats, weights = [], []
     for emb in CURRENT_EMBEDDINGS.values():
@@ -104,11 +108,13 @@ def compute_list_emb(gene_list):
 
 
 def get_vec(item):
+    """Return the cached signature vector for one perturbation record."""
     term_id, genes = item
     return {term_id: compute_list_emb(list(genes))}
 
 
 def prepare_data(train_cpds):
+    """Construct training fingerprints and target vectors for selected compounds."""
     global pert_sig, cpd2target, perttype, sigvec_all
     pos_l, pos_r, neg_l, neg_r = [], [], [], []
     freq = {}
@@ -155,6 +161,7 @@ def prepare_data(train_cpds):
 
 
 def inference_testset(model, test_cpds, out_dir, batch_sz):
+    """Predict and rank candidate targets for held-out compounds in batches."""
     global pert_sig, cpd2target, perttype, sigvec_all
     line_to_idx = pert_sig[pert_sig.Perturbagen == perttype].groupby('CellLine').groups
     cnt10 = cnt100 = 0
@@ -201,8 +208,19 @@ if __name__ == '__main__':
 
     # load embeddings
     def load_emb(path):
+        """Load one embedding CSV as a gene-to-vector dictionary."""
+        out = {}
         with open(path) as f:
-            return {row[0]: np.array(row[1:], dtype=np.float32) for row in csv.reader(f)}
+            reader = csv.reader(f)
+            for row in reader:
+                if not row:
+                    continue
+                try:
+                    vals = np.array(row[1:], dtype=np.float32)
+                except ValueError:
+                    continue
+                out[row[0]] = vals
+        return out
 
     base = {'go': load_emb(args.emb_go), 'archs4': load_emb(args.emb_archs4)}
     opt = {}
@@ -304,4 +322,3 @@ if __name__ == '__main__':
         del sigvec_all, sig2vec; gc.collect()
 
     print("Processing complete.")
-

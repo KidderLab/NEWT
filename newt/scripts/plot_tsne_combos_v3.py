@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 
+"""Create deterministic t-SNE diagnostics for combinations of gene embeddings.
+
+The projections and mosaics produced here are downstream visualization
+diagnostics; t-SNE is not a NEWT training objective.
+"""
+
 import os
 import sys
 import math
@@ -121,6 +127,7 @@ def run_mosaic(Y, labels, color_map, out_png, combo_name):
     plt.close(fig)
 
 def main():
+    """Parse input paths and export global, per-category, and mosaic diagnostics."""
     parser = argparse.ArgumentParser(
         description="t-SNE for each embedding combo + per‐category & mosaic plots"
     )
@@ -206,4 +213,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

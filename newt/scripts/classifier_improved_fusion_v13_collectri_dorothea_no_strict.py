@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 """
+Runs experiments using the "loose" approach only.
+
+The loose approach always requires the default modality and fills in missing other
+modalities (ppi, msigdb, dorothea, and collectri) with zeros if they are missing.
+This method retains many more genes compared to the strict approach.
+
 The script:
  - Iterates over combinations of modalities.
  - Trains a RandomForest classifier plus applies t-SNE on the raw embeddings.
@@ -9,6 +15,8 @@ The script:
      - Fused embeddings text file,
      - An aggregated JSON report,
      - An accuracy ranking file (all based solely on the loose approach).
+
+New modalities "dorothea" and "collectri" are included in various combinations.
 """
 
 import argparse
@@ -87,6 +95,7 @@ def load_tissue_file(filepath):
 
 # Mapping modality names to dimensions.
 def modality_dim(mod, cellnet_dim):
+    """Return the expected vector dimension for a named embedding modality."""
     if mod == "default":
         return 512
     elif mod in ["ppi", "msigdb", "dorothea", "collectri"]:
@@ -196,14 +205,19 @@ def run_rf_tsne(X, y, genes, tissues, combo_name, outdir, approach):
 ###############################################################################
 
 class MultiModalAttentionFusion(tf.keras.layers.Layer):
+    """Fuse modality-specific projections using learned per-sample attention weights."""
+
     def __init__(self, projection_dim=128, **kwargs):
+        """Initialize the shared projection size for all input modalities."""
         super().__init__(**kwargs)
         self.projection_dim = projection_dim
     def build(self, input_shape):
+        """Create one projection layer per modality and a scalar attention scorer."""
         self.proj_layers = [Dense(self.projection_dim, activation='relu') for _ in input_shape]
         self.score_layer = Dense(1)
         super().build(input_shape)
     def call(self, inputs):
+        """Project, weight, and sum modality tensors into one fused representation."""
         projected = []
         for proj, inp in zip(self.proj_layers, inputs):
             projected.append(proj(inp))
@@ -307,6 +321,7 @@ def run_fusion_combo(approach_label, build_func, default_emb, ppi_emb, msigdb_em
     tissue_set = sorted(list(set(y_all)))
     t2i = {t: i for i, t in enumerate(tissue_set)}
     def to_onehot(lbls):
+        """Convert tissue labels to the one-hot matrix expected by Keras."""
         arr = np.zeros((len(lbls), len(tissue_set)), dtype=np.float32)
         for i, val in enumerate(lbls):
             arr[i, t2i[val]] = 1.0
@@ -412,6 +427,7 @@ def save_accuracy_ranking(final_results, outpath):
 ###############################################################################
 
 def main():
+    """Run loose-universe classification, fusion, visualization, and report export."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--outdir", default="results", help="Output directory.")
     parser.add_argument("--default_file", default="../data/gene_vec_go_256.csv", help="GO (256).")
@@ -473,10 +489,12 @@ def main():
     ]
 
     def combo_name(c):
+        """Return a stable filename label for one modality combination."""
         return "default" if len(c) == 0 else "_".join(c)
 
     results_loose = {}
     def run_combos_for_approach(approach_name, build_func):
+        """Evaluate Random Forest and t-SNE diagnostics for every configured combination."""
         approach_results = {}
         for c in combos:
             cname = combo_name(c)
@@ -534,4 +552,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

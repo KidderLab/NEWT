@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+export_graphml_ATC_subnetworks_v9.py
+
 Creates a directory hierarchy under OUTPUT_DIR reflecting ATC levels:
   • Level-1 main classes (A, B, C, …): filtered top-10 network + CSVs
   • Level-2 subgroups (e.g. A01, B02…): filtered top-10 network + CSVs
@@ -19,6 +21,7 @@ OUTPUT_DIR = "./ct_network_exports_ATC_subnetworks_shRNA"
 
 
 def load_atc_mapping():
+    """Load the WHO ATC table and derive level-1 and level-5 lookup tables."""
     atc_all = pd.read_csv(ATC_FILE, dtype=str)
     # Level-1 classes
     main = (
@@ -38,6 +41,7 @@ def load_atc_mapping():
 
 
 def load_all_interactions():
+    """Load and concatenate compound-target interaction CSVs from INPUT_DIR."""
     dfs=[]
     for f in sorted(glob.glob(os.path.join(INPUT_DIR,'*.csv'))):
         df=pd.read_csv(f)
@@ -57,10 +61,13 @@ def load_all_interactions():
     return pd.concat(dfs,ignore_index=True)
 
 
-def safe_name(s): return s.replace(' ','_').replace('/','_').replace(',','')
+def safe_name(s):
+    """Return a filesystem-safe form of an ATC label."""
+    return s.replace(' ','_').replace('/','_').replace(',','')
 
 
 def filter_top10(grp):
+    """Retain each compound's ten highest-probability target interactions."""
     # top-10 targets per compound
     df_c=grp.sort_values(['compound_id','Probability'],ascending=[True,False])
     df_c=df_c.groupby('compound_id',as_index=False).head(10)
@@ -76,10 +83,12 @@ def filter_top10(grp):
 
 
 def export_graph(G, path):
+    """Write a NetworkX graph to GraphML at path."""
     nx.write_graphml(G,path)
 
 
 def export_csv(detail_df, targets, base, outdir, suffix=''):
+    """Write detailed interactions and a headerless target list for one ATC group."""
     # details CSV
     det=detail_df.copy()
     det=det.rename(columns={
@@ -96,6 +105,7 @@ def export_csv(detail_df, targets, base, outdir, suffix=''):
 
 
 def build_and_export():
+    """Build ATC level 1-3 subnetworks and export filtered and full graph assets."""
     atc_all, main, subs7 = load_atc_mapping()
     df = load_all_interactions().merge(subs7, on='cmpd_norm', how='left').dropna(subset=['class'])
     os.makedirs(OUTPUT_DIR,exist_ok=True)

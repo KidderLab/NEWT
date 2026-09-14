@@ -1,4 +1,18 @@
 #!/usr/bin/env python3
+"""Transfer NEWT embeddings to single-cell data for downstream diagnostics.
+
+Identifier harmonization maps source embeddings to dataset genes before PCA,
+neighbors, UMAP, and Leiden are run. These operations assess transfer and
+biological interpretability; they are not NEWT training objectives.
+"""
+# =============================================================================
+# scanpy_clustering_v16c.py  (diagnostic + robust)
+# - Keeps ALL original outputs/plots and file names
+# - Headless plotting (Agg) + timestamped outdir
+# - Restores 'skip first CSV row' behavior to match original loader
+# - Adds verbose logging of how many vectors were loaded per source
+# - Fails loudly if improved embeddings are empty (prevents silent degenerate plots)
+# =============================================================================
 
 import os
 import csv
@@ -21,10 +35,12 @@ sc.settings.autoshow = False
 
 
 def _timestamp() -> str:
+    """Return a minute-resolution timestamp used in output directory names."""
     return _dt.datetime.now().strftime("%Y%m%d_%H%M")
 
 
 def _final_outdir(base: str | None) -> str:
+    """Build a timestamped output directory from an optional user prefix."""
     stamp = _timestamp()
     if base:
         base = str(base).rstrip("/ ")
@@ -33,11 +49,13 @@ def _final_outdir(base: str | None) -> str:
 
 
 def _log(msg: str):
+    """Print a consistently prefixed progress message."""
     print(f"[scanpy_v16c] {msg}")
 
 
 # ------------------ Embedding IO (restored semantics) ------------------
 def load_embeddings_csv(path, dim=None):
+    """Load an embedding CSV into a gene-to-vector dictionary."""
     emb = {}
     if not os.path.exists(path):
         _log(f"MISSING: {path}")
@@ -66,6 +84,7 @@ def load_embeddings_csv(path, dim=None):
 
 
 def compute_weight(mat):
+    """Compute normalized row-magnitude weights for an embedding matrix."""
     sim = cosine_similarity(mat, mat)
     sim[np.isnan(sim)] = 0
     mu = sim.mean(axis=1)
@@ -75,6 +94,7 @@ def compute_weight(mat):
 
 
 def compute_list_emb(genes, sources):
+    """Construct aligned multimodal vectors for dataset gene identifiers."""
     mats, wts = [], []
     for name, d in sources.items():
         if not d:
@@ -95,6 +115,7 @@ def compute_list_emb(genes, sources):
 
 
 def load_all(data_dir):
+    """Load all configured embedding sources from the supplied data directory."""
     go = load_embeddings_csv(os.path.join(data_dir, 'gene_vec_go_256.csv'), 256)
     arch = load_embeddings_csv(os.path.join(data_dir, 'gene_vec_archs4_256.csv'), 256)
 
@@ -128,6 +149,7 @@ marker_genes = {
 
 
 def run_pipeline(adata, rep_key, label, outdir):
+    """Run PCA/neighbors/UMAP/Leiden diagnostics for one transferred representation."""
     ad = adata.copy()
     sc.pp.neighbors(ad, use_rep=rep_key)
     sc.tl.umap(ad)
@@ -146,6 +168,7 @@ def run_pipeline(adata, rep_key, label, outdir):
 
 
 def main():
+    """Load PBMC data, harmonize identifiers, and export downstream diagnostics."""
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_dir', required=True)
     parser.add_argument('--outdir', default=None,

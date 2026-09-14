@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 
+"""Evaluate known-target recovery for NEWT predictions against a default baseline.
+
+The script loads per-cell-line ranked predictions, computes recall and first-rank
+metrics, performs paired comparisons, and writes summary plots and tables.
+"""
+
 import os
 import re
 import math
@@ -48,6 +54,7 @@ logging.basicConfig(
 )
 
 def load_compound_targets(csv_path):
+    """Load the reference mapping from compound identifiers to known Entrez targets."""
     df = pd.read_csv(csv_path)
     mapping = {}
     for _, row in df.iterrows():
@@ -69,6 +76,7 @@ def load_compound_targets(csv_path):
     return mapping
 
 def load_predictions_by_cell_line(folder_path):
+    """Load ranked prediction files and group them by cell line and compound."""
     preds = {}
     pattern = re.compile(r'^(BRD-[^@]+)@([^_]+)_shRNA\.txt$')
     for fn in os.listdir(folder_path):
@@ -88,6 +96,7 @@ def load_predictions_by_cell_line(folder_path):
     return preds
 
 def aggregate_predictions(preds_by_line):
+    """Collapse cell-line-specific predictions into a compound-level ranking."""
     agg = {}
     for line_preds in preds_by_line.values():
         for cmpd, gd in line_preds.items():
@@ -98,6 +107,7 @@ def aggregate_predictions(preds_by_line):
     return agg
 
 def compute_recall(mapping, preds):
+    """Compute known-target recall over the configured top-ranked fractions."""
     fracs = []
     for cmpd, targets in mapping.items():
         if cmpd not in preds:
@@ -116,6 +126,7 @@ def compute_recall(mapping, preds):
     return {p: sum(1 for f in fracs if f <= p) / total for p in [0.01, 0.02, 0.03, 0.04, 0.05]}
 
 def get_best_metrics(mapping, preds):
+    """Return each compound's best known-target rank and normalized rank fraction."""
     best_fracs, best_ranks = [], []
     for cmpd, targets in mapping.items():
         if cmpd not in preds:
@@ -141,6 +152,7 @@ def get_best_metrics(mapping, preds):
 # ---- Plotting routines ----
 
 def plot_recall_curve(r_def, r_imp, line, odir):
+    """Plot baseline and NEWT recall curves for one cell line."""
     fig, ax = plt.subplots(figsize=(6, 6))
     xs = sorted(r_def.keys())
     ax.plot(xs, [r_def[x] for x in xs], 'o-', label='default')
@@ -156,6 +168,7 @@ def plot_recall_curve(r_def, r_imp, line, odir):
     plt.close(fig)
 
 def plot_cdf(fr_def, fr_imp, line, odir):
+    """Plot empirical CDFs of best known-target rank fractions."""
     fig, ax = plt.subplots(figsize=(6, 6))
     data_def = np.sort(fr_def)
     data_imp = np.sort(fr_imp)
@@ -172,6 +185,7 @@ def plot_cdf(fr_def, fr_imp, line, odir):
     plt.close(fig)
 
 def plot_combined_recall(per_line, odir):
+    """Plot mean target recall across all evaluated cell lines."""
     fig, ax = plt.subplots(figsize=(6, 6))
     colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
     lines = [l for l in per_line if l not in IGNORE_CELLS]
@@ -192,6 +206,7 @@ def plot_combined_recall(per_line, odir):
     plt.close(fig)
 
 def plot_combined_cdf(per_line, odir):
+    """Plot pooled first-rank CDFs across evaluated cell lines."""
     fig, ax = plt.subplots(figsize=(6, 6))
     colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
     lines = [l for l in per_line if l not in IGNORE_CELLS]
@@ -214,6 +229,7 @@ def plot_combined_cdf(per_line, odir):
     plt.close(fig)
 
 def plot_mosaic_recall(per_line, odir):
+    """Export a multi-panel recall comparison organized by cell line."""
     lines = [l for l in per_line if l not in IGNORE_CELLS]
     if not lines:
         return
@@ -237,6 +253,7 @@ def plot_mosaic_recall(per_line, odir):
     plt.close(fig)
 
 def plot_mosaic_cdf(per_line, odir):
+    """Export a multi-panel first-rank CDF organized by cell line."""
     lines = [l for l in per_line if l not in IGNORE_CELLS]
     if not lines:
         return
@@ -262,6 +279,7 @@ def plot_mosaic_cdf(per_line, odir):
     plt.close(fig)
 
 def main():
+    """Run per-cell-line and pooled recovery analyses and write all outputs."""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     logging.info("Loading compound→target map from %s", CPD_GENE_PAIRS_CSV)
     mapping = load_compound_targets(CPD_GENE_PAIRS_CSV)
@@ -359,4 +377,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

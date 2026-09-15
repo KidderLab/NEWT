@@ -1,10 +1,12 @@
 name: newt_env
+
 channels:
   - conda-forge
   - defaults
 
 dependencies:
   - python=3.10
+  - pip
   - click>=8
   - numpy>=1.23
   - pandas>=2
@@ -13,13 +15,15 @@ dependencies:
   - matplotlib>=3.7
   - seaborn
   - networkx>=3.0
-  - tensorflow>=2.14
   - gensim
   - scanpy
   - leidenalg
   - python-igraph
   - igraph
   - libstdcxx-ng
-  - pip
   - pip:
-    - mygene
+      - tensorflow[and-cuda]==2.19.1
+      - mygene>=3.2
+
+variables:
+  PYTHONNOUSERSITE: "1"
